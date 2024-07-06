@@ -1,4 +1,4 @@
-package com.cpena.contactos.back.entities;
+package com.cpena.contactos.back.domain.entities;
 
 import java.util.Date;
 import java.util.List;
