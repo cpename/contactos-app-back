@@ -34,4 +34,7 @@ public class Album {
 	
 	@Column(name = "album_update_date")
 	private Date updatedAt;
+	
+	@Column(name = "id_profile")
+	private Integer profileId;
 }

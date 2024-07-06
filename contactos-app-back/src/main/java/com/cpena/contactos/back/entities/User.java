@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -22,7 +25,7 @@ public class User {
 //	private static final Logger log = LoggerFactory.getLogger(User.class);
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "users_user_id_seq")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "users_user_id_seq")
 	@Column(name = "user_id" )
 	private Integer id;
 	
@@ -49,6 +52,12 @@ public class User {
 	
 	@Column(name = "last_login")
 	private Date lastLogin;
+	
+//	mapped by
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_profile", referencedColumnName = "id_profile")
+	private Profile profile;
+	
 	
 	
 	
