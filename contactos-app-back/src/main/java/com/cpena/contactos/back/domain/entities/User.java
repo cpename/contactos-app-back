@@ -1,11 +1,7 @@
 package com.cpena.contactos.back.domain.entities;
 
-import java.io.Serializable;
+
 import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,19 +11,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
 public class User {
-	
-//	private static final Logger log = LoggerFactory.getLogger(User.class);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "users_user_id_seq")
 	@Column(name = "user_id" )
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "user_name", length = 100, nullable = false)
 	private String name;
@@ -42,7 +44,7 @@ public class User {
 	private String password;
 	
 	@Column(name ="user_active")
-	private boolean isActive;
+	private Boolean isActive;
 	
 	@Column(name = "created_at")
 	private Date createdAt;

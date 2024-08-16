@@ -3,24 +3,35 @@ package com.cpena.contactos.back.domain.entities;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "profiles")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Profile {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "profiles_id_profile_seq")
 	@Column(name = "id_profile")
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "name_profile", nullable = false, unique = true, length = 100)
 	private String name;
@@ -49,10 +60,8 @@ public class Profile {
 	@Column(name = "updated_at")
 	private Date updatedAt;
 	
-	@Column(name = "user_id")
-	private Integer userId;
-	
-	@OneToMany(mappedBy = "profile")
+	@JsonIgnore
+	@OneToMany(mappedBy = "profile", fetch = FetchType.LAZY)
 	private List<User> users; 
 
 }
