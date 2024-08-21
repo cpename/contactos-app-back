@@ -1,18 +1,17 @@
 package com.cpena.contactos.back.services.business;
 
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.cpena.contactos.back.constants.ErrorMessageEnum;
 import com.cpena.contactos.back.domain.entities.User;
 import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
 import com.cpena.contactos.back.services.dtos.UserDto;
+import com.cpena.contactos.back.services.exceptions.BusinessException;
 import com.cpena.contactos.back.services.mapper.UserMapper;
-
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService implements IUserService{
 	
-	private static final Logger log = LoggerFactory.getLogger(UserService.class);
-
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -46,11 +43,24 @@ public class UserService implements IUserService{
 	}
 
 	/**
-	 * Crea un usuario segun valores en userDto.
+	 * Crea un usuario segun valores en userDto. El email es un valor unico, al igual que el nombre y el apellido.
 	 * @return User entity
-	 */
+	 */	
 	public UserDto createUser(UserDto userDto) {
+		
+//		verificar nombres en mayuscula y minuscula y en email también
+		
+		if( !userRepository.findByEmail(userDto.getEmail()).isEmpty() ) {
+			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_EMAIL_ALREADY_EXIST);
+		}
+		
+		if( !userRepository.findByNameAndLastname(userDto.getName(), userDto.getLastname()).isEmpty()) {
+			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NAME_LASTNAME);
+		}
+		
 		User user = userMapper.userDtoToUser(userDto);
+		
+		
 		
 		return userMapper.userToUserDto( userRepository.save(user));
 	}
