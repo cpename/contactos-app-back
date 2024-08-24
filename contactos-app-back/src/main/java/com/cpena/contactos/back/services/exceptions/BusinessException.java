@@ -25,13 +25,14 @@ public class BusinessException extends ResponseStatusException {
 	
 	public BusinessException( HttpStatusCode status, ErrorMessageEnum error ) {
 		super(status, error.getMessage());
-		this.error = new ContactosError(error.getCode(), error.getMessage());
+		this.error = new ContactosError(error.getMessage(), error.getCode());
 		
 	}
 	
+		
 	public BusinessException( HttpStatusCode status, ErrorMessageEnum error, Throwable cause ) {
 		super(status, error.getMessage(), cause);
-		this.error = new ContactosError(error.getCode(), error.getMessage());
+		this.error = new ContactosError(error.getMessage(), error.getCode());
 		
 	}
 

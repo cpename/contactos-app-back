@@ -12,14 +12,12 @@ public class ContactosError {
 	
 	
 	
-	public ContactosError(String errorMessage) {
-		super();
+	public ContactosError(String errorMessage) {		
 		this.errorMessage = errorMessage;
 	}
 
 
-	public ContactosError(String errorMessage, String errorCode) {
-		super();
+	public ContactosError(String errorMessage, String errorCode) {		
 		this.errorMessage = errorMessage;
 		this.errorCode = errorCode;
 	}

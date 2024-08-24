@@ -1,5 +1,6 @@
 package com.cpena.contactos.back.services.business;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,23 +45,16 @@ public class UserService implements IUserService{
 
 	/**
 	 * Crea un usuario segun valores en userDto. El email es un valor unico, al igual que el nombre y el apellido.
-	 * @return User entity
+	 * @return UserDto 
 	 */	
 	public UserDto createUser(UserDto userDto) {
 		
-//		verificar nombres en mayuscula y minuscula y en email también
-		
-		if( !userRepository.findByEmail(userDto.getEmail()).isEmpty() ) {
-			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_EMAIL_ALREADY_EXIST);
-		}
-		
-		if( !userRepository.findByNameAndLastname(userDto.getName(), userDto.getLastname()).isEmpty()) {
-			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NAME_LASTNAME);
-		}
-		
+		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
+		checkUserEmailExist(userDto.getEmail().toLowerCase());
+				
 		User user = userMapper.userDtoToUser(userDto);
-		
-		
+		user.setIsActive(true);
+		user.setCreatedAt(new Date());
 		
 		return userMapper.userToUserDto( userRepository.save(user));
 	}
@@ -82,6 +76,23 @@ public class UserService implements IUserService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	private void checkUserExists(String name, String lastname) {
+		List<User> usersList = userRepository.findByNameAndLastname(name, lastname);
+		
+		if(!usersList.isEmpty())
+			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NAME_LASTNAME); 
+		
+		
+	}
+	
+	private void checkUserEmailExist(String email) {
+		List<User> usersList = userRepository.findByEmail(email);
+		if(!usersList.isEmpty())
+			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_EMAIL_ALREADY_EXIST);
+			
+	}
+	
 	
 	
 }

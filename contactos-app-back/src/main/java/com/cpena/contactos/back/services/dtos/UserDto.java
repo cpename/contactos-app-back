@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * validacion email fuente: https://w3.unpocodetodo.info/utiles/regex-ejemplos.php?type=email
+ */
 @Getter
 @Setter
 @ToString
@@ -24,11 +27,14 @@ public class UserDto {
 	
 	@NotEmpty(message = "lastname must be not null or empty")
 	private String lastname;
-		
-	@Email(message = "email must be in a correct format")
+	
+	
+	@Email(message = "{email.notvalidpattern}", 
+			regexp = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
+	@NotEmpty(message = "{email.notempty}")
 	private String email;
 	
-	@Size(max = 15, min = 6, message = "Password must be between 6 and 15 character length")
+	@Size(max = 15, min = 6, message = "{password.size}")
 	private String password;
 	
 	private Boolean isActive;
