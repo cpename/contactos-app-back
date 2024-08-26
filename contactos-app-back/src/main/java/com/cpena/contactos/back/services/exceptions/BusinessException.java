@@ -11,7 +11,7 @@ import lombok.Getter;
 public class BusinessException extends ResponseStatusException {
 
 	private static final long serialVersionUID = 1L;
-	private final transient ContactosError error;
+	private final ContactosError error;
 	
 	public BusinessException(HttpStatusCode status, String reason) {
 		super(status, reason);
