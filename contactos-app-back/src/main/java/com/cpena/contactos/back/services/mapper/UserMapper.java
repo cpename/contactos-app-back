@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.cpena.contactos.back.domain.entities.User;
+import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
 
 @Mapper(componentModel = "default")
@@ -15,6 +16,8 @@ public interface UserMapper {
 	UserDto userToUserDto(User user);
 	
 	User userDtoToUser(UserDto userDto);
+	
+	User userCreateDtoToUser(UserCreateDto userDto);
 	
 	@Mapping(target = "id", ignore = true)
 	UserDto createUserDTOWithoutId(User user);

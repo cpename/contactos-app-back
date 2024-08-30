@@ -1,9 +1,9 @@
 package com.cpena.contactos.back.services.dtos;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -15,14 +15,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserCreateDto {
 	
-	@NotEmpty
-	@Size(min = 2, max = 100, message = "{email.notempty}")
+	@NotEmpty(message = "{user.name.notempty}")
+	@Size(min = 2, max = 100, message = "{user.name.size}")
 	private String name;
 	
-	private String lastName;
+	@NotEmpty(message = "{user.lastname.notempty}")
+	@Size(min = 2, max= 100, message = "{user.lastname.size}")
+	private String lastname;
 	
+	@NotEmpty(message = "{user.email.notempty}")
+	@Email( message = "{user.email.notvalidpattern}", 
+			regexp = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
 	private String email;
-		
+	
+	@NotEmpty(message = "{user.password.notempty}")
+	@Size(min = 6, max = 15, message = "{user.password.size}")
 	private String password;
 	
 	

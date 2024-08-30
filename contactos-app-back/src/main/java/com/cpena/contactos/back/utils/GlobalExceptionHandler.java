@@ -3,6 +3,7 @@ package com.cpena.contactos.back.utils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
@@ -39,8 +40,7 @@ public class GlobalExceptionHandler {
 	
 	@ResponseBody
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, List<String>>> exceptionHandler( MethodArgumentNotValidException e ){
-		log.error("MethodArgumentNotValidException: " + e.getMessage() + "\n" + HttpStatus.BAD_REQUEST);
+	public ResponseEntity<Map<String, List<String>>> exceptionHandler( MethodArgumentNotValidException e ){		
 //		fuente: https://salithachathuranga94.medium.com/validation-and-exception-handling-in-spring-boot-51597b580ffd
 		List<String> errors = e.getBindingResult()
 				.getFieldErrors()

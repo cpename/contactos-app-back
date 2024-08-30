@@ -10,6 +10,7 @@ import com.cpena.contactos.back.constants.ErrorMessageEnum;
 import com.cpena.contactos.back.domain.entities.User;
 import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
+import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
 import com.cpena.contactos.back.services.mapper.UserMapper;
@@ -47,12 +48,12 @@ public class UserService implements IUserService{
 	 * Crea un usuario segun valores en userDto. El email es un valor unico, al igual que el nombre y el apellido.
 	 * @return UserDto 
 	 */	
-	public UserDto createUser(UserDto userDto) {
+	public UserDto createUser(UserCreateDto userDto) {
 		
 		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
 		checkUserEmailExist(userDto.getEmail().toLowerCase());
 				
-		User user = userMapper.userDtoToUser(userDto);
+		User user = userMapper.userCreateDtoToUser(userDto);
 		user.setIsActive(true);
 		user.setCreatedAt(new Date());
 		

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cpena.contactos.back.constants.Constants;
 import com.cpena.contactos.back.services.business.UserService;
+import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
 
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class UserController {
 	private UserService userService;
 		
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> createUser( @RequestBody @Valid @NotNull UserDto nuevoUserDto ){
+	public ResponseEntity<UserDto> createUser( @RequestBody @Valid @NotNull UserCreateDto nuevoUserDto ){
 		
 		UserDto userDto = userService.createUser(nuevoUserDto);
 		

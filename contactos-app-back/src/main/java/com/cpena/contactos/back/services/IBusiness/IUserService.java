@@ -3,6 +3,7 @@ package com.cpena.contactos.back.services.IBusiness;
 import java.util.List;
 
 import com.cpena.contactos.back.domain.entities.User;
+import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
 
 /**
@@ -12,10 +13,10 @@ public interface IUserService {
 	
 	/**
 	 * Servicio para crear un usuario. 
-	 * @param userDto
+	 * @param UserCreateDto
 	 * @return UserDto 
 	 */
-	public UserDto createUser(UserDto userDto);
+	public UserDto createUser(UserCreateDto userDto);
 	
 	/**
 	 * Servicio para actualizar un usuario. 
