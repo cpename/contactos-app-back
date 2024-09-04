@@ -5,6 +5,7 @@ import java.util.List;
 import com.cpena.contactos.back.domain.entities.User;
 import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
+import com.cpena.contactos.back.services.dtos.UserUpdateDto;
 
 /**
  * Interface para gestionar Usuarios
@@ -23,7 +24,7 @@ public interface IUserService {
 	 * @param userDto
 	 * @return
 	 */
-	public User updateUser(UserDto userDto);
+	public UserDto updateUser(Long userId, UserUpdateDto userDto);
 	
 	/**
 	 * Servicio para borrar un usuario. Recive el id de usuario para buscar el registro.

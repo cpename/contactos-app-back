@@ -1,13 +1,21 @@
 package com.cpena.contactos.back.services.dtos;
 
-import java.util.Date;
+import org.hibernate.validator.constraints.Range;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
+
+@Data
+@RequiredArgsConstructor
 public class UserUpdateDto {
-	
+
+//	@NotEmpty(message = "{user.id.notempty}")
+//	@Pattern(regexp = "^-?\\d{1,19}$")
 	private Long id;
 	
 	@NotEmpty(message = "{email.notempty}")
@@ -27,8 +35,8 @@ public class UserUpdateDto {
 	@Size(min = 6, max = 15, message = "{user.password.size}")
 	private String password;
 	
-	@NotEmpty(message = "{user.isactive.notempty}")
-	@Size(min = 1, max = 1, message = "{user.isactive.size}")
+//	@NotEmpty(message = "{user.isactive.notempty}")
+//	@Range(min = 1, max = 1, message = "{user.isactive.size}")
 	private Boolean isActive;
 	
 

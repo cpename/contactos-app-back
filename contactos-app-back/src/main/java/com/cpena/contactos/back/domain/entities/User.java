@@ -46,7 +46,7 @@ public class User implements Serializable {
 	@Column(name ="user_active")
 	private Boolean isActive;
 	
-	@Column(name = "created_at")
+	@Column(name = "created_at", updatable = false, nullable = false)
 	private Date createdAt;
 	
 	@Column(name = "updated_at")

@@ -41,7 +41,8 @@ public class UserDto {
 	
 	private Date createdAt;
 	
-	private Date updtedAt;
+	private Date updatedAt;
+	
 	
 	private Date lastLogin;
 	

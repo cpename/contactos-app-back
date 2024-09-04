@@ -12,9 +12,12 @@ import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
 import com.cpena.contactos.back.services.dtos.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.UserDto;
+import com.cpena.contactos.back.services.dtos.UserUpdateDto;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
+import com.cpena.contactos.back.services.exceptions.ContactosException;
 import com.cpena.contactos.back.services.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -48,7 +51,7 @@ public class UserService implements IUserService{
 	 * Crea un usuario segun valores en userDto. El email es un valor unico, al igual que el nombre y el apellido.
 	 * @return UserDto 
 	 */	
-	public UserDto createUser(UserCreateDto userDto) {
+	public UserDto createUser(@NotNull UserCreateDto userDto) {
 		
 		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
 		checkUserEmailExist(userDto.getEmail().toLowerCase());
@@ -60,10 +63,24 @@ public class UserService implements IUserService{
 		return userMapper.userToUserDto( userRepository.save(user));
 	}
 
-	@Override
-	public User updateUser(UserDto userDto) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public UserDto updateUser(@NotNull Long id, @NotNull UserUpdateDto userDto) {
+		
+		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
+		checkUserEmailExist(userDto.getEmail().toLowerCase());
+		
+		User userToUpdate = userRepository.findById(Long.valueOf(id))
+				.orElseThrow( () -> new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND) );
+		
+		userToUpdate.setEmail(userDto.getEmail());
+		userToUpdate.setIsActive(userDto.getIsActive());
+		userToUpdate.setLastname(userDto.getLastname());
+		userToUpdate.setName(userDto.getName());
+		userToUpdate.setPassword(userDto.getPassword());
+		userToUpdate.setUpdatedAt(new Date());
+			
+		
+		return userMapper.userToUserDto(userRepository.save(userToUpdate));
 	}
 
 	@Override
@@ -79,7 +96,7 @@ public class UserService implements IUserService{
 	}
 	
 	private void checkUserExists(String name, String lastname) {
-		List<User> usersList = userRepository.findByNameAndLastname(name, lastname);
+		List<User> usersList = userRepository.findByNameAndLastnameIgnoreCaseAllIgnoreCase(name, lastname);
 		
 		if(!usersList.isEmpty())
 			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NAME_LASTNAME); 
@@ -88,7 +105,7 @@ public class UserService implements IUserService{
 	}
 	
 	private void checkUserEmailExist(String email) {
-		List<User> usersList = userRepository.findByEmail(email);
+		List<User> usersList = userRepository.findByEmailAllIgnoreCase(email);
 		if(!usersList.isEmpty())
 			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_EMAIL_ALREADY_EXIST);
 			
