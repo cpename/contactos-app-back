@@ -4,17 +4,17 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.cpena.contactos.back.constants.ErrorMessageEnum;
 import com.cpena.contactos.back.domain.entities.User;
 import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
-import com.cpena.contactos.back.services.dtos.UserCreateDto;
-import com.cpena.contactos.back.services.dtos.UserDto;
-import com.cpena.contactos.back.services.dtos.UserUpdateDto;
+import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
+import com.cpena.contactos.back.services.dtos.users.UserDto;
+import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
-import com.cpena.contactos.back.services.exceptions.ContactosException;
 import com.cpena.contactos.back.services.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
-public class UserService implements IUserService{
+public class UserServiceImpl implements IUserService{
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -85,15 +85,70 @@ public class UserService implements IUserService{
 
 	@Override
 	public void deleteUser(Long userId) {
-		// TODO Auto-generated method stub
+		
+		User userToDelete = userRepository.findById(userId)
+				.orElseThrow( () -> new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND) );
+		userRepository.delete(userToDelete);
 		
 	}
 
 	@Override
-	public List<User> findUsers(String searchTerm) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<UserDto> findUsers(String searchTerm) {
+		List<User> users = userRepository.findAll();
+		if(users.isEmpty())
+			throw new BusinessException(HttpStatus.NO_CONTENT, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
+		
+		return userMapper.userToUserDto(users);
 	}
+	
+	
+	
+	@Override
+	public List<UserDto> getAllUsers() {
+		
+		List<User> users = userRepository.findAll();
+		if(users.isEmpty())
+			throw new BusinessException(HttpStatus.NO_CONTENT, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
+		
+		List<UserDto> userDtos = userMapper.userToUserDto(users);
+		
+		return userDtos;
+	}
+	
+	
+	
+	@Override
+	public UserDto getUserByEmail(String userEmail) {
+//		checkUserEmailExist(userEmail);		
+		List<User> userList = userRepository.findByEmailAllIgnoreCase(userEmail);
+		
+		if(userList.isEmpty())
+			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND);
+		else if(userList.size() > 1)
+			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageEnum.USER_EMAIL_MUST_BE_UNIQUE);
+		
+		UserDto userDto = userMapper.userToUserDto( userList.get(0));
+		
+		return userDto;
+	}
+	
+	
+	
+	@Override
+	public void changeUserPassword(Long userId, String password) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	@Override
+	public void deactivateActivateUser(Long userId, Boolean changeActive) {
+		
+		
+	}
+	
+
 	
 	private void checkUserExists(String name, String lastname) {
 		List<User> usersList = userRepository.findByNameAndLastnameIgnoreCaseAllIgnoreCase(name, lastname);
@@ -108,9 +163,10 @@ public class UserService implements IUserService{
 		List<User> usersList = userRepository.findByEmailAllIgnoreCase(email);
 		if(!usersList.isEmpty())
 			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_EMAIL_ALREADY_EXIST);
+		
 			
 	}
-	
+
 	
 	
 }

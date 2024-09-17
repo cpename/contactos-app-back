@@ -3,7 +3,7 @@ package com.cpena.contactos.back.services.IBusiness;
 import java.util.List;
 
 import com.cpena.contactos.back.domain.entities.Profile;
-import com.cpena.contactos.back.services.dtos.ProfileDto;
+import com.cpena.contactos.back.services.dtos.profiles.ProfileDto;
 
 /**
  *  Inteface para gestionar los perfiles de los usuarios

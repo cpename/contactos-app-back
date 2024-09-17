@@ -1,4 +1,4 @@
-package com.cpena.contactos.back.services.dtos;
+package com.cpena.contactos.back.services.dtos.profiles;
 
 import java.util.Date;
 

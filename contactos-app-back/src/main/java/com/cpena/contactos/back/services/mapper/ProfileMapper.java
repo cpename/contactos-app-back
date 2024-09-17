@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.cpena.contactos.back.domain.entities.Profile;
-import com.cpena.contactos.back.services.dtos.ProfileDto;
+import com.cpena.contactos.back.services.dtos.profiles.ProfileDto;
 
 @Mapper(componentModel = "default")
 public interface ProfileMapper {

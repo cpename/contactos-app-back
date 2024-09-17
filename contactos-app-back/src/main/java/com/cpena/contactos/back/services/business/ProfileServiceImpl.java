@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.cpena.contactos.back.domain.entities.Profile;
 import com.cpena.contactos.back.services.IBusiness.IProfileService;
-import com.cpena.contactos.back.services.dtos.ProfileDto;
+import com.cpena.contactos.back.services.dtos.profiles.ProfileDto;
 
-public class ProfileService implements IProfileService {
+public class ProfileServiceImpl implements IProfileService {
 
 	@Override
 	public Profile createProfile(ProfileDto profileDto) {

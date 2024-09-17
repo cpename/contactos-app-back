@@ -14,7 +14,13 @@ public enum ErrorMessageEnum {
 	
 //	profile creating
 	PROFILE_NAME_ALREADY_EXIST("", ""),
-	PROFILE_NAME_NOT_FOUND("", "");
+	PROFILE_NAME_NOT_FOUND("", ""),
+	
+//	Resources not found but correct request
+	RESOURCE_REQUEST_NOT_FOUND("RR_T01", "The request resource was not found"),
+	
+//	Error interno
+	USER_EMAIL_MUST_BE_UNIQUE("IE_01", "There are more then one identique email.");
 
 	private final String code;
 	private final String message;

@@ -3,9 +3,9 @@ package com.cpena.contactos.back.services.IBusiness;
 import java.util.List;
 
 import com.cpena.contactos.back.domain.entities.User;
-import com.cpena.contactos.back.services.dtos.UserCreateDto;
-import com.cpena.contactos.back.services.dtos.UserDto;
-import com.cpena.contactos.back.services.dtos.UserUpdateDto;
+import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
+import com.cpena.contactos.back.services.dtos.users.UserDto;
+import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
 
 /**
  * Interface para gestionar Usuarios
@@ -37,6 +37,33 @@ public interface IUserService {
 	 * @param searchTerm
 	 * @return
 	 */
-	public List<User> findUsers(String searchTerm);
+	public List<UserDto> findUsers(String searchTerm);
+	
+	/**
+	 * Get all users registers.
+	 * @return List of UserDto
+	 */
+	public List<UserDto> getAllUsers();
+	
+	/**
+	 * Get user by email information.
+	 * @param userEmail 
+	 * @return UserDto with the user information
+	 */
+	public UserDto getUserByEmail(String userEmail);
+	
+	/**
+	 * Change user password. It is necessary userId
+	 * @param userId
+	 * @param password
+	 */
+	public void changeUserPassword(Long userId, String password);
+	
+	/**
+	 * Activate or deactivate an user
+	 * @param userId
+	 * @param changeActive
+	 */
+	public void deactivateActivateUser(Long userId, Boolean changeActive);
 
 }
