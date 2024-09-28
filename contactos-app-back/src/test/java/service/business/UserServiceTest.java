@@ -43,13 +43,13 @@ public class UserServiceTest {
 	private UserServiceImpl userService;
 	
 	@BeforeEach
-	public void init() {
+	 void init() {
 		MockitoAnnotations.openMocks(this);
 	}
 	
 	
 	@Test
-	public void testGetAllUsers() {
+	void testGetAllUsers() {
 //		Given 
 		User user1 = new User();		
 		user1.setId(1L);
@@ -88,7 +88,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testGetAllUsersNotFound() {
+	void testGetAllUsersNotFound() {
 //		Given
 //		When		  
 		BusinessException exception = assertThrows(BusinessException.class, () -> this.userService.getAllUsers());
@@ -99,7 +99,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testDeleteUser() {
+	void testDeleteUser() {
 //		Given 
 		final User user1 = new User();		
 		user1.setId(1L);
@@ -120,7 +120,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testDeleteUserNotFoundException() {
+	void testDeleteUserNotFoundException() {
 //		Given
 //		When		  
 		BusinessException exception = assertThrows(BusinessException.class, () -> this.userService.deleteUser(1L));
@@ -130,7 +130,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testCreateUser() {
+	void testCreateUser() {
 //		Given
 		User newUser = new User();
 //		newUser.setId(1L);
@@ -161,7 +161,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testGetUserByEmail() {
+	void testGetUserByEmail() {
 		User user = new User();
 		user.setId(1L);
 		user.setEmail("cpena@gmail.com");
@@ -183,7 +183,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testGetUserByEmailNotFoundException() {
+	void testGetUserByEmailNotFoundException() {
 //		Given
 //		When
 		BusinessException exception = assertThrows(BusinessException.class, ()->{
@@ -195,7 +195,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void testGetUserByEmailEmailNotUnique() {
+	void testGetUserByEmailEmailNotUnique() {
 //		Given
 		User user1 = new User();
 		user1.setId(1L);
@@ -218,6 +218,7 @@ public class UserServiceTest {
 		assertEquals(ErrorMessageEnum.USER_EMAIL_MUST_BE_UNIQUE.getCode(), exception.getError().getErrorCode());
 		assertEquals(ErrorMessageEnum.USER_EMAIL_MUST_BE_UNIQUE.getMessage(), exception.getError().getErrorMessage());
 	}
+	
 	
 //	@Test
 //	public void testGetAllUsers() {

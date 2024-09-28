@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.cpena.contactos.back.constants.ErrorMessageEnum;
@@ -87,7 +86,7 @@ public class UserServiceImpl implements IUserService{
 	public void deleteUser(Long userId) {
 		
 		User userToDelete = userRepository.findById(userId)
-				.orElseThrow( () -> new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND) );
+				.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageEnum.USER_NOT_FOUND) );
 		userRepository.delete(userToDelete);
 		
 	}
@@ -96,7 +95,7 @@ public class UserServiceImpl implements IUserService{
 	public List<UserDto> findUsers(String searchTerm) {
 		List<User> users = userRepository.findAll();
 		if(users.isEmpty())
-			throw new BusinessException(HttpStatus.NO_CONTENT, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
+			throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
 		
 		return userMapper.userToUserDto(users);
 	}
@@ -108,7 +107,7 @@ public class UserServiceImpl implements IUserService{
 		
 		List<User> users = userRepository.findAll();
 		if(users.isEmpty())
-			throw new BusinessException(HttpStatus.NO_CONTENT, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
+			throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageEnum.RESOURCE_REQUEST_NOT_FOUND);
 		
 		List<UserDto> userDtos = userMapper.userToUserDto(users);
 		
@@ -123,7 +122,7 @@ public class UserServiceImpl implements IUserService{
 		List<User> userList = userRepository.findByEmailAllIgnoreCase(userEmail);
 		
 		if(userList.isEmpty())
-			throw new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND);
+			throw new BusinessException(HttpStatus.NOT_FOUND, ErrorMessageEnum.USER_NOT_FOUND);
 		else if(userList.size() > 1)
 			throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageEnum.USER_EMAIL_MUST_BE_UNIQUE);
 		
