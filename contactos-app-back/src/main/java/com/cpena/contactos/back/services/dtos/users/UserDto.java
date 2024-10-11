@@ -2,6 +2,8 @@ package com.cpena.contactos.back.services.dtos.users;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -33,6 +35,7 @@ public class UserDto {
 			regexp = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
 	@NotEmpty(message = "{email.notempty}")
 	private String email;
+	
 	
 	@Size(max = 15, min = 6, message = "{password.size}")
 	private String password;

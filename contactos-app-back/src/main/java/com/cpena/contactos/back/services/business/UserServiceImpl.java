@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cpena.contactos.back.constants.ErrorMessageEnum;
@@ -34,10 +35,13 @@ public class UserServiceImpl implements IUserService{
 	
 	private UserMapper userMapper = UserMapper.INSTANCE;
 	
-		
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	public UserDto getUserDTOFromUser(User user) {
 		return userMapper.userToUserDto(user);
 	}
+	
 	
 	
 	
@@ -56,6 +60,7 @@ public class UserServiceImpl implements IUserService{
 		checkUserEmailExist(userDto.getEmail().toLowerCase());
 				
 		User user = userMapper.userCreateDtoToUser(userDto);
+		user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 		user.setIsActive(true);
 		user.setCreatedAt(new Date());
 		
@@ -65,17 +70,22 @@ public class UserServiceImpl implements IUserService{
 	
 	public UserDto updateUser(@NotNull Long id, @NotNull UserUpdateDto userDto) {
 		
-		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
-		checkUserEmailExist(userDto.getEmail().toLowerCase());
+		
+//		checkUserExists(userDto.getName().toLowerCase(), userDto.getLastname().toLowerCase());
+//		checkUserEmailExist(userDto.getEmail().toLowerCase());
 		
 		User userToUpdate = userRepository.findById(Long.valueOf(id))
 				.orElseThrow( () -> new BusinessException(HttpStatus.BAD_REQUEST, ErrorMessageEnum.USER_NOT_FOUND) );
 		
-		userToUpdate.setEmail(userDto.getEmail());
+		if(userDto.getEmail() != null)
+			userToUpdate.setEmail(userDto.getEmail());
 		userToUpdate.setIsActive(userDto.getIsActive());
-		userToUpdate.setLastname(userDto.getLastname());
-		userToUpdate.setName(userDto.getName());
-		userToUpdate.setPassword(userDto.getPassword());
+		if( userDto.getLastname() != null)
+			userToUpdate.setLastname(userDto.getLastname());
+		if(userDto.getName() != null)
+			userToUpdate.setName(userDto.getName());
+		if(userDto.getPassword() != null)
+			userToUpdate.setPassword(bCryptPasswordEncoder.encode( userDto.getPassword() ));
 		userToUpdate.setUpdatedAt(new Date());
 			
 		

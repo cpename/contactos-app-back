@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,20 +37,20 @@ public class UserController {
 	private UserServiceImpl userServiceImpl;
 		
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> createUser( @RequestBody @Valid @NotNull UserCreateDto nuevoUserDto ){
+	public ResponseEntity<HttpStatus> createUser( @RequestBody @Valid @NotNull UserCreateDto nuevoUserDto ){
 		
 		UserDto userDto = userServiceImpl.createUser(nuevoUserDto);
 		
-		return ResponseEntity.ok( userDto );			
+		return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);		
 		
 	}
 	
 	@PutMapping(value = "/{userId}/user", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> updateUser( @NotNull @PathVariable Long userId, @Valid @NotNull @RequestBody UserUpdateDto userUpdateDto ){
+	public ResponseEntity<HttpStatus> updateUser( @NotNull @PathVariable Long userId, @Valid @NotNull @RequestBody UserUpdateDto userUpdateDto ){
 		
 		UserDto userDto = userServiceImpl.updateUser(userId, userUpdateDto);
 		
-		return ResponseEntity.ok(userDto);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@DeleteMapping(value ="/delete/{userId}/user", produces = MediaType.APPLICATION_JSON_VALUE)
