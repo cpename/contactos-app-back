@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.cpena.contactos.back.constants.Constants;
 import com.cpena.contactos.back.security.filter.AuthenticationFilter;
 import com.cpena.contactos.back.security.filter.ExceptionHandlerFilter;
+import com.cpena.contactos.back.security.filter.JWTAuthorizationFilter;
 import com.cpena.contactos.back.security.manager.CustomAuthenticationManager;
 
 import lombok.AllArgsConstructor;
@@ -51,15 +52,16 @@ public class SecurityConfig {
 //				 		.requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
 //				 		.requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
 			 		.requestMatchers(HttpMethod.POST, Constants.REGISTER_PATH).permitAll()
-			 		.requestMatchers(HttpMethod.GET).permitAll()
-			 		.requestMatchers(HttpMethod.PUT).permitAll()
+//			 		.requestMatchers(HttpMethod.GET).permitAll()
+//			 		.requestMatchers(HttpMethod.PUT).permitAll()
 			 		.anyRequest().authenticated()
 			 		
 			 		
 	 		)		 		
 	 		.httpBasic(Customizer.withDefaults())	 		
 	 		.addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
-	 		.addFilter(authenticationFilter)	 		
+	 		.addFilter(authenticationFilter)
+	 		.addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
 	 		.sessionManagement(
 	 				(httpSecuritySessionManagementeConfigure) ->
 	 				httpSecuritySessionManagementeConfigure.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  

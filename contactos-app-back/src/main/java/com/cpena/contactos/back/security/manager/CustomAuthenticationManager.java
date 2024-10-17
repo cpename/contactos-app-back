@@ -39,7 +39,7 @@ public class CustomAuthenticationManager implements AuthenticationManager{
 		
 		if(!bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), userDto.getPassword())) {
 			logger.info("las credenciales no son las mismas");
-			throw new BadCredentialsException("Password is not correct");
+			throw new BadCredentialsException("You provided an incorrect password");
 			
 		}			
 		

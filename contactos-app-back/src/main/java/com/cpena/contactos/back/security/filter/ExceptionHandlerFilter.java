@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -26,13 +28,15 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		try {
 			filterChain.doFilter(request, response);
 			
+		}catch(JWTVerificationException  e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write(e.getMessage());
+			
 		}catch(BusinessException e){
 			response.setStatus(e.getStatusCode().value());
 			response.getWriter().write(e.getMessage());
 			
-		}
-		
-		catch(EntityNotFoundException e) {
+		}catch(EntityNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.getWriter().write("Username doesn't exist");
 			response.getWriter().flush();

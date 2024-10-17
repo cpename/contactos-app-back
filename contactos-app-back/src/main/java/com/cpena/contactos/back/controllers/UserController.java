@@ -36,7 +36,7 @@ public class UserController {
 	@Autowired
 	private UserServiceImpl userServiceImpl;
 		
-	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> createUser( @RequestBody @Valid @NotNull UserCreateDto nuevoUserDto ){
 		
 		UserDto userDto = userServiceImpl.createUser(nuevoUserDto);

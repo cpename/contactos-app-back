@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.cpena.contactos.back.constants.ErrorMessageEnum;
 import com.cpena.contactos.back.domain.entities.Profile;
@@ -41,6 +42,9 @@ public class UserServiceTest {
 	
 	@InjectMocks
 	private UserServiceImpl userService;
+	
+	@Mock
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@BeforeEach
 	 void init() {
@@ -147,6 +151,7 @@ public class UserServiceTest {
 		
 		
 //		when
+		Mockito.when(bCryptPasswordEncoder.encode(userCreateDto.getPassword())).thenReturn("XXXX12345");
 		Mockito.when(userRepository
 				.findByNameAndLastnameIgnoreCaseAllIgnoreCase(userCreateDto.getName(), userCreateDto.getLastname())).thenReturn(List.of());
 		Mockito.when(userRepository.findByEmailAllIgnoreCase(userCreateDto.getEmail())).thenReturn(List.of());
