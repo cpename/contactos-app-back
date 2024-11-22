@@ -2,15 +2,25 @@ package com.cpena.contactos.back.services.business;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cpena.contactos.back.constants.ErrorMessageEnum;
+import com.cpena.contactos.back.domain.entities.Role;
 import com.cpena.contactos.back.domain.entities.User;
+import com.cpena.contactos.back.domain.entities.UserAndRole;
+import com.cpena.contactos.back.domain.entities.UsersAndRolesKey;
+import com.cpena.contactos.back.domain.repositories.RoleRepository;
+import com.cpena.contactos.back.domain.repositories.UserAndRoleRepository;
 import com.cpena.contactos.back.domain.repositories.UserRepository;
+import com.cpena.contactos.back.services.IBusiness.IUserAndRoleService;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
+import com.cpena.contactos.back.services.dtos.roles.RoleAsignDto;
+import com.cpena.contactos.back.services.dtos.roles.RoleDetailDto;
 import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
@@ -33,10 +43,19 @@ public class UserServiceImpl implements IUserService{
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private RoleRepository roleRepository;
+	
 	private UserMapper userMapper = UserMapper.INSTANCE;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private IUserAndRoleService userAndRoleService;
+	
+	@Autowired
+	private UserAndRoleRepository userAndRoleRepository;
 	
 	public UserDto getUserDTOFromUser(User user) {
 		return userMapper.userToUserDto(user);
@@ -158,6 +177,42 @@ public class UserServiceImpl implements IUserService{
 	}
 	
 
+	@Override
+	public void asignRolesToUser(Long userId, List<RoleAsignDto> roleAsignDtos) {
+		User user = userRepository.findById(userId).
+				orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "User Not found") );
+		
+		for(RoleAsignDto asigDto : roleAsignDtos ) {
+			Role role = roleRepository.findById(asigDto.getRoleId() )			
+					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "Role not found") );
+			
+			UserAndRole userAndRole = new UserAndRole();
+
+			userAndRole.setRole(role);
+			userAndRole.setUser(user);
+			userAndRole.setName("prueba role: " + role.getName());
+			
+			userAndRoleRepository.save(userAndRole);
+			
+		}
+		
+		userRepository.save(user);
+		
+	}
+	
+	private boolean isExistRoleInUser( Role newRole, Set<Role> oldRoles ) {
+		
+		for(Role role: oldRoles) {
+			if( newRole.getId().equals(role.getId()) )
+				return true;
+		}
+		
+		return false;
+	}
+	
+	
+	
+
 	
 	private void checkUserExists(String name, String lastname) {
 		List<User> usersList = userRepository.findByNameAndLastnameIgnoreCaseAllIgnoreCase(name, lastname);
@@ -175,6 +230,10 @@ public class UserServiceImpl implements IUserService{
 		
 			
 	}
+
+
+
+
 
 	
 	

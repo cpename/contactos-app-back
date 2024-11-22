@@ -1,6 +1,6 @@
 package com.cpena.contactos.back.constants;
 
-public class Constants {
+public class Constantes {
 	
 	public static final String BASE_URI = "/contacts/api";
 	

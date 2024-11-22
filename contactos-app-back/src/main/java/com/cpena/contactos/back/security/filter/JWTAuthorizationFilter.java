@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.cpena.contactos.back.constants.Constants;
+import com.cpena.contactos.back.constants.Constantes;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,13 +24,13 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 			FilterChain filterChain) throws ServletException, IOException {
 		String header = request.getHeader("Authorization");
 		
-		if(header == null || !header.startsWith(Constants.BEARER)) {
+		if(header == null || !header.startsWith(Constantes.BEARER)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 		
-		String token = request.getHeader("Authorization").replace(Constants.BEARER, "");
-		String user = JWT.require(Algorithm.HMAC512(Constants.SECRET_KEY))
+		String token = request.getHeader("Authorization").replace(Constantes.BEARER, "");
+		String user = JWT.require(Algorithm.HMAC512(Constantes.SECRET_KEY))
 		.build()
 		.verify(token)
 		.getSubject();

@@ -23,15 +23,15 @@ public class CustomAuthenticationManager implements AuthenticationManager{
 	
 	Logger logger = LoggerFactory.getLogger(CustomAuthenticationManager.class);
 	
-	public CustomAuthenticationManager() {
-		System.out.println("creando customAuthenticationManager");
-	}
-	
 	@Autowired
 	private IUserService userServiceImpl;
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	public CustomAuthenticationManager() {
+		logger.info("Creando CustomeAuthenticationManager");
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {		

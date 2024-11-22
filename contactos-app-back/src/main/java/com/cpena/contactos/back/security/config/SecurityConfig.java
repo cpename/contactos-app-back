@@ -1,4 +1,4 @@
-package com.cpena.contactos.back.config;
+package com.cpena.contactos.back.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.cpena.contactos.back.constants.Constants;
+import com.cpena.contactos.back.constants.Constantes;
 import com.cpena.contactos.back.security.filter.AuthenticationFilter;
 import com.cpena.contactos.back.security.filter.ExceptionHandlerFilter;
 import com.cpena.contactos.back.security.filter.JWTAuthorizationFilter;
@@ -41,7 +41,7 @@ public class SecurityConfig {
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager);
-		authenticationFilter.setFilterProcessesUrl(Constants.BASE_URI + "/authentication");
+		authenticationFilter.setFilterProcessesUrl(Constantes.BASE_URI + "/authentication");
 //		ExceptionHandlerFilter exceptionHandlerFilter = new ExceptionHandlerFilter();
 		
 	 	http
@@ -51,12 +51,10 @@ public class SecurityConfig {
 //		 				.requestMatchers(HttpMethod.DELETE, "contacts/api/users/delete/*/user").hasRole("ADMIN")		 		
 //				 		.requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
 //				 		.requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
-			 		.requestMatchers(HttpMethod.POST, Constants.REGISTER_PATH).permitAll()
+			 		.requestMatchers(HttpMethod.POST, Constantes.REGISTER_PATH).permitAll()
 //			 		.requestMatchers(HttpMethod.GET).permitAll()
 //			 		.requestMatchers(HttpMethod.PUT).permitAll()
 			 		.anyRequest().authenticated()
-			 		
-			 		
 	 		)		 		
 	 		.httpBasic(Customizer.withDefaults())	 		
 	 		.addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
@@ -71,34 +69,34 @@ public class SecurityConfig {
 	 	return http.build();
     }
 	 
-	 @Bean
-	 public UserDetailsService userDetailsService() {		 
-		 UserDetails admin = User.builder()				 
-				 .username("admin")
-				 .password(passwordEncoder.encode("admin-pass"))
-				 .roles("ADMIN", "USER")
-				 .build();
-		 
-		 UserDetails user = User.builder()
-				 .username("user")
-				 .password(passwordEncoder.encode("user-pass"))
-				 .roles("USER")
-				 .build();
-		 
-		 return new InMemoryUserDetailsManager(admin, user);
-				 
-	}
-	 
 //	 @Bean
-	 public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-		 AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-		 authenticationManagerBuilder
-		 	.userDetailsService(userDetailsService())
-		 	.passwordEncoder(passwordEncoder);		 
-		 return authenticationManagerBuilder.build();
-		 
-		 
-	 }
+//	 public UserDetailsService userDetailsService() {		 
+//		 UserDetails admin = User.builder()				 
+//				 .username("admin")
+//				 .password(passwordEncoder.encode("admin-pass"))
+//				 .roles("ADMIN", "USER")
+//				 .build();
+//		 
+//		 UserDetails user = User.builder()
+//				 .username("user")
+//				 .password(passwordEncoder.encode("user-pass"))
+//				 .roles("USER")
+//				 .build();
+//		 
+//		 return new InMemoryUserDetailsManager(admin, user);
+//				 
+//	}
+//	 
+////	 @Bean
+//	 public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//		 AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+//		 authenticationManagerBuilder
+//		 	.userDetailsService(userDetailsService())
+//		 	.passwordEncoder(passwordEncoder);		 
+//		 return authenticationManagerBuilder.build();
+//		 
+//		 
+//	 }
 	
 //	@Bean
 //	public AuthenticationManager authenticationManager( HttpSecurity httpSecurity, PasswordEncoder passwordEncoder, 

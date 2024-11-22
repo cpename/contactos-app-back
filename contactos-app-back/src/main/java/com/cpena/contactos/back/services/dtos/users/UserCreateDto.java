@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
  * @author capem76
  */
 @Data
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserCreateDto {
 	
 	@NotEmpty(message = "{user.name.notempty}")

@@ -1,8 +1,11 @@
 package com.cpena.contactos.back.security.filter;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.cpena.contactos.back.constants.Constants;
+import com.cpena.contactos.back.constants.Constantes;
 import com.cpena.contactos.back.security.manager.CustomAuthenticationManager;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +30,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
+	private Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 	private CustomAuthenticationManager customAuthenticationManager;
+	
+	public AuthenticationFilter( CustomAuthenticationManager customAuthenticationManager ) {
+		this.customAuthenticationManager = customAuthenticationManager;
+	}
 		
 
 	@Override
@@ -39,8 +47,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 				
 		try {
 			UserDto userDto = new ObjectMapper().readValue(request.getInputStream(), UserDto.class);
-			System.out.println("user email: " + userDto.getEmail());
-			System.out.println("user password: " + userDto.getPassword());
+			log.info("user email: {}" , userDto.getEmail());
+			log.info("user password: {}", userDto); 
 			Authentication  authentication = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
 			
 			return	customAuthenticationManager.authenticate(authentication);
@@ -64,12 +72,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
+		log.info("user authenticated: {}", authResult.getName());		
 		String token = JWT.create()
 				.withSubject(authResult.getName())
-				.withExpiresAt(new Date(System.currentTimeMillis() + Constants.TOKEN_EXPIRATION_30_MINUTES))
-				.sign(Algorithm.HMAC512(Constants.SECRET_KEY));
+				.withIssuedAt(Date.from(Instant.now()))
+				.withClaim("scope", "admins")
+				.withExpiresAt(new Date(System.currentTimeMillis() + Constantes.TOKEN_EXPIRATION_30_MINUTES))
+				.sign(Algorithm.HMAC512(Constantes.SECRET_KEY));
 		
-		response.addHeader(Constants.AUTHORIZATION, Constants.BEARER + token);
+		response.addHeader(Constantes.AUTHORIZATION, Constantes.BEARER + token);
 				
 	
 	}

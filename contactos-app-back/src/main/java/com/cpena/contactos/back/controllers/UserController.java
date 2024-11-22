@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cpena.contactos.back.constants.Constants;
-import com.cpena.contactos.back.services.business.UserServiceImpl;
+import com.cpena.contactos.back.constants.Constantes;
+import com.cpena.contactos.back.services.IBusiness.IUserAndRoleService;
+import com.cpena.contactos.back.services.IBusiness.IUserService;
+import com.cpena.contactos.back.services.dtos.roles.RoleAsignDto;
+import com.cpena.contactos.back.services.dtos.roles.RoleDto;
 import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
@@ -30,16 +33,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping(Constants.BASE_URI + "/users")
+@RequestMapping(Constantes.BASE_URI + "/users")
 public class UserController {
 	
 	@Autowired
-	private UserServiceImpl userServiceImpl;
+	private IUserService userService;
+	
+//	@Autowired
+//	private IUserAndRoleService userAndRoleService;
 		
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> createUser( @RequestBody @Valid @NotNull UserCreateDto nuevoUserDto ){
 		
-		UserDto userDto = userServiceImpl.createUser(nuevoUserDto);
+		UserDto userDto = userService.createUser(nuevoUserDto);
 		
 		return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);		
 		
@@ -48,7 +54,7 @@ public class UserController {
 	@PutMapping(value = "/{userId}/user", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> updateUser( @NotNull @PathVariable Long userId, @Valid @NotNull @RequestBody UserUpdateDto userUpdateDto ){
 		
-		UserDto userDto = userServiceImpl.updateUser(userId, userUpdateDto);
+		UserDto userDto = userService.updateUser(userId, userUpdateDto);
 		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
@@ -56,7 +62,7 @@ public class UserController {
 	@DeleteMapping(value ="/delete/{userId}/user", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<HttpStatus> deleteUser(@PathVariable @NotNull Long userId){
 		
-		userServiceImpl.deleteUser(userId);
+		userService.deleteUser(userId);
 		
 		return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
 	}
@@ -64,11 +70,21 @@ public class UserController {
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<UserDto>> getAllUsers(){
 		
-		List<UserDto> userDtos = userServiceImpl.getAllUsers();
+		List<UserDto> userDtos = userService.getAllUsers();
 		
 		return new ResponseEntity<>(userDtos, HttpStatus.OK);
 	}
 	
+	
+	@PostMapping(value = "/{userId}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<HttpStatus> asignRolesToUser( @PathVariable @NotNull Long userId, @NotNull @RequestBody List<RoleAsignDto> roleAsignDtos  ){
+		
+		userService.asignRolesToUser(userId, roleAsignDtos);
+		
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+	}
+	
+		
 	
 	
 }
