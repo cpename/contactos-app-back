@@ -1,5 +1,6 @@
 package com.cpena.contactos.back.services.business;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
 import com.cpena.contactos.back.services.mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -178,35 +180,46 @@ public class UserServiceImpl implements IUserService{
 	
 
 	@Override
+	@Transactional
 	public void asignRolesToUser(Long userId, List<RoleAsignDto> roleAsignDtos) {
+		StringBuffer str = new StringBuffer();
+		List<UserAndRole> userAndRolesList = new ArrayList<>();
+		
 		User user = userRepository.findById(userId).
 				orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "User Not found") );
 		
 		for(RoleAsignDto asigDto : roleAsignDtos ) {
 			Role role = roleRepository.findById(asigDto.getRoleId() )			
-					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "Role not found") );
+					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "Role not found") );			
+			
+			if (isExistRoleInUser(role, user.getUsersAndRoles()) ) {
+				str.append(role.getName()).append(" --- ");				
+			}
 			
 			UserAndRole userAndRole = new UserAndRole();
-
 			userAndRole.setRole(role);
 			userAndRole.setUser(user);
 			userAndRole.setName("prueba role: " + role.getName());
-			
-			userAndRoleRepository.save(userAndRole);
-			
+			userAndRolesList.add(userAndRole);
+					
 		}
 		
+		if(!str.isEmpty()) {
+			throw new BusinessException(HttpStatus.BAD_REQUEST, "Usuario: " + user.getName() + "tiene ya asignado los roles: " + str.toString() );
+		}
+		userAndRolesList.stream().forEach( userAndRole -> {
+			userAndRoleRepository.save(userAndRole);
+		});
 		userRepository.save(user);
 		
 	}
 	
-	private boolean isExistRoleInUser( Role newRole, Set<Role> oldRoles ) {
+	private boolean isExistRoleInUser( Role newRole, Set<UserAndRole> usersAndRoles ) {
 		
-		for(Role role: oldRoles) {
-			if( newRole.getId().equals(role.getId()) )
+		for(UserAndRole userAndRole: usersAndRoles) {
+			if( newRole.getId().equals(userAndRole.getRole().getId()) )
 				return true;
-		}
-		
+		}		
 		return false;
 	}
 	
@@ -230,6 +243,8 @@ public class UserServiceImpl implements IUserService{
 		
 			
 	}
+	
+	
 
 
 
