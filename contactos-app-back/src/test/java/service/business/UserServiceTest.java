@@ -224,6 +224,30 @@ public class UserServiceTest {
 		assertEquals(ErrorMessageEnum.USER_EMAIL_MUST_BE_UNIQUE.getMessage(), exception.getError().getErrorMessage());
 	}
 	
+	@Test
+	public void testUpdateUser() {
+		//Given
+		UserDto userDto = new UserDto();
+		userDto.setEmail("cpena@gmail.com");
+		userDto.setIsActive(false);
+		userDto.setLastname("Pena");
+		userDto.setName("Cristian");
+		userDto.setPassword(bCryptPasswordEncoder.encode("ABCD12345"));
+		userDto.setCreatedAt(new Date());
+		
+//		Given
+		User newUser = new User();
+//		newUser.setId(1L);
+		newUser.setName("Francisco");
+		newUser.setLastname("Fran");
+		newUser.setEmail("ffran@gmail.com");
+		newUser.setPassword("ABC12345");
+		
+		//when
+		// then
+		
+	}
+	
 	
 //	@Test
 //	public void testGetAllUsers() {

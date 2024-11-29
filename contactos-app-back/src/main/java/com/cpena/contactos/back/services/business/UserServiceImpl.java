@@ -14,14 +14,12 @@ import com.cpena.contactos.back.constants.ErrorMessageEnum;
 import com.cpena.contactos.back.domain.entities.Role;
 import com.cpena.contactos.back.domain.entities.User;
 import com.cpena.contactos.back.domain.entities.UserAndRole;
-import com.cpena.contactos.back.domain.entities.UsersAndRolesKey;
 import com.cpena.contactos.back.domain.repositories.RoleRepository;
 import com.cpena.contactos.back.domain.repositories.UserAndRoleRepository;
 import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserAndRoleService;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
 import com.cpena.contactos.back.services.dtos.roles.RoleAsignDto;
-import com.cpena.contactos.back.services.dtos.roles.RoleDetailDto;
 import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
@@ -52,20 +50,14 @@ public class UserServiceImpl implements IUserService{
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
-	@Autowired
-	private IUserAndRoleService userAndRoleService;
-	
+		
 	@Autowired
 	private UserAndRoleRepository userAndRoleRepository;
 	
 	public UserDto getUserDTOFromUser(User user) {
 		return userMapper.userToUserDto(user);
 	}
-	
-	
-	
-	
+		
 	@PostConstruct
 	public void postConstruct() {
 		log.info("Creando User Service");
@@ -189,24 +181,26 @@ public class UserServiceImpl implements IUserService{
 				orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "User Not found") );
 		
 		for(RoleAsignDto asigDto : roleAsignDtos ) {
+			UserAndRole userAndRole = new UserAndRole();
 			Role role = roleRepository.findById(asigDto.getRoleId() )			
-					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "Role not found") );			
+					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "Role " + asigDto.getRoleId() + " not found") );			
 			
 			if (isExistRoleInUser(role, user.getUsersAndRoles()) ) {
 				str.append(role.getName()).append(" --- ");				
-			}
+			}else{
+				userAndRole.setRole(role);
+				userAndRole.setUser(user);
+				userAndRole.setName("prueba role: " + role.getName());
+				userAndRolesList.add(userAndRole);				
+			}		
 			
-			UserAndRole userAndRole = new UserAndRole();
-			userAndRole.setRole(role);
-			userAndRole.setUser(user);
-			userAndRole.setName("prueba role: " + role.getName());
-			userAndRolesList.add(userAndRole);
 					
 		}
 		
 		if(!str.isEmpty()) {
-			throw new BusinessException(HttpStatus.BAD_REQUEST, "Usuario: " + user.getName() + "tiene ya asignado los roles: " + str.toString() );
+			throw new BusinessException(HttpStatus.BAD_REQUEST, "Usuario: " + user.getName() + " tiene ya asignado los roles: " + str.toString() );
 		}
+		
 		userAndRolesList.stream().forEach( userAndRole -> {
 			userAndRoleRepository.save(userAndRole);
 		});

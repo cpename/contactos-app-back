@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +14,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Embeddable
-//@NoArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
 public class UsersAndRolesKey implements Serializable {
 
 	private static final long serialVersionUID = 1L;

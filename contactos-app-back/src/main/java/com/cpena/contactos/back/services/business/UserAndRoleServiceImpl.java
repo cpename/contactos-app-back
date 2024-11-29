@@ -18,7 +18,9 @@ import com.cpena.contactos.back.domain.repositories.UserRepository;
 import com.cpena.contactos.back.services.IBusiness.IUserAndRoleService;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
 import com.cpena.contactos.back.services.dtos.roles.RoleAsignDto;
+import com.cpena.contactos.back.services.dtos.roles.RoleDetailDto;
 import com.cpena.contactos.back.services.dtos.roles.RoleDto;
+import com.cpena.contactos.back.services.dtos.roles.UserAndRoleDto;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.cpena.contactos.back.services.exceptions.BusinessException;
 
@@ -37,15 +39,20 @@ public class UserAndRoleServiceImpl implements IUserAndRoleService {
 
 
 	@Override
-	public void deleteRoleToUser(Long userId, Long roleID) {
+	public void deleteRolesToUser(Long userId, List<UserAndRoleDto> userAndRoleDtos) {
 		User user = userRepository.findById(userId).
 				orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "User Not found") );
 		
-		
+		for(UserAndRoleDto userAndRoleDto: userAndRoleDtos) {
+			UserAndRole userAndRole =  userAndRoleRepository
+					.findById(new UsersAndRolesKey(userAndRoleDto.getUser_id(), userAndRoleDto.getRole_id()))
+					.orElseThrow( () -> new BusinessException(HttpStatus.NOT_FOUND, "There is no user and role aisgned"));
+			
+			userAndRoleRepository.delete(userAndRole);
+		}		
 		
 	}
-
-
+	
 	@Override
 	public void asignRolesToUser(Long userId, List<RoleAsignDto> asignRolesDto) {
 
@@ -76,6 +83,8 @@ public class UserAndRoleServiceImpl implements IUserAndRoleService {
 		
 		
 	}
+
+
 
 
 }

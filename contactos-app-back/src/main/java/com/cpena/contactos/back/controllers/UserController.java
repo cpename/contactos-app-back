@@ -22,6 +22,7 @@ import com.cpena.contactos.back.services.IBusiness.IUserAndRoleService;
 import com.cpena.contactos.back.services.IBusiness.IUserService;
 import com.cpena.contactos.back.services.dtos.roles.RoleAsignDto;
 import com.cpena.contactos.back.services.dtos.roles.RoleDto;
+import com.cpena.contactos.back.services.dtos.roles.UserAndRoleDto;
 import com.cpena.contactos.back.services.dtos.users.UserCreateDto;
 import com.cpena.contactos.back.services.dtos.users.UserDto;
 import com.cpena.contactos.back.services.dtos.users.UserUpdateDto;
@@ -38,6 +39,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IUserAndRoleService userAndRoleService;
 	
 //	@Autowired
 //	private IUserAndRoleService userAndRoleService;
@@ -82,6 +86,16 @@ public class UserController {
 		userService.asignRolesToUser(userId, roleAsignDtos);
 		
 		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+	}
+	
+	
+	@DeleteMapping(value = "/{userId}/roles", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<HttpStatus> deleteRolesToUser(@PathVariable @NotNull Long userId, @NotNull @RequestBody List<UserAndRoleDto> userAndRoleDtos){
+		
+		userAndRoleService.deleteRolesToUser(userId, userAndRoleDtos);
+		
+		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+		
 	}
 	
 		
